@@ -1,0 +1,373 @@
+---
+import MotionHeading from "../components/MotionHeading.astro";
+import ContactComposer from "../components/ContactComposer.astro";
+import ProjectFolder from "../components/ProjectFolder.astro";
+import { portfolio } from "../content/portfolio";
+import "../styles/theme.css";
+import "../styles/portfolio.css";
+import "../styles/site-motion.css";
+import "../styles/composition.css";
+
+const [featured] = portfolio.projects;
+
+const { portrait, education, links } = portfolio;
+const hasContact = Boolean(links.email || links.github || links.instagram || links.linkedin || links.resume);
+const title = portfolio.name + " | Portfolio";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={portfolio.intro} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="opening-curtain" aria-hidden="true"><span>{portfolio.fullName}</span></div>
+    <header class="site-header dark" id="top">
+      <div class="container header-inner">
+        <a class="wordmark" href="#main">{portfolio.name}</a>
+        <nav aria-label="Main navigation">
+          {hasContact && <a class="contact-fill" href="#contact">Contact<span class="contact-fill-layer" aria-hidden="true">Contact</span></a>}
+          <button class="menu-trigger" type="button" aria-haspopup="dialog" aria-controls="section-menu">Menu<span aria-hidden="true"></span></button>
+        </nav>
+      </div>
+    </header>
+    <dialog class="section-menu" id="section-menu" aria-label="Portfolio menu">
+      <div class="menu-mast">
+        <span>{portfolio.fullName}</span>
+        <form method="dialog"><button class="menu-close" autofocus>Close ×</button></form>
+      </div>
+      <nav class="menu-links" aria-label="Portfolio sections">
+        <a href="#main">Home</a>
+        <a href="#about">About</a>
+        {featured && <a href="#work">Selected work</a>}
+        {portfolio.skills.length > 0 && <a href="#toolkit">Toolkit</a>}
+        {(education || portfolio.currentLearning.length > 0) && <a href="#learning">Education</a>}
+        {hasContact && <a href="#contact">Contact</a>}
+        {links.resume && <a href={links.resume}>Résumé</a>}
+      </nav>
+    </dialog>
+    <script>
+      const menu = document.querySelector<HTMLDialogElement>("#section-menu");
+      document.querySelector(".menu-trigger")?.addEventListener("click", () => menu?.showModal());
+      menu?.addEventListener("click", event => {
+        if (event.target instanceof Element && event.target.closest("a")) menu.close();
+      });
+    </script>
+
+    <main id="main" tabindex="-1">
+      <section class="hero dark" aria-labelledby="hero-title" data-hero>
+        <div class="container hero-grid">
+          <MotionHeading id="hero-title" text={portfolio.name} hero />
+          <div class="hero-copy">
+            <p class="eyebrow">Computer Science Student</p>
+            <p class="hero-intro">{portfolio.intro}</p>
+            <div class="actions">
+              {featured && (
+                <a class="explore-projects" href="#work">
+                  <span class="explore-label">Explore projects</span>
+                  <span class="explore-arrow" aria-hidden="true">↘</span>
+                </a>
+              )}
+              {links.resume && <a class="button button-secondary" href={links.resume}>Résumé</a>}
+            </div>
+          </div>
+          <div class:list={["hero-art", { "hero-art-photo": portrait }]} aria-hidden={portrait ? undefined : "true"}>
+            <div class="hero-inset" data-hero-backdrop></div>
+            {portrait
+              ? <img
+                  data-hero-foreground
+                  src={portrait.url}
+                  srcset={portrait.srcset}
+                  sizes={portrait.srcset ? "(min-width: 768px) 304px, 224px" : undefined}
+                  width={portrait.width}
+                  height={portrait.height}
+                  alt={portrait.alt}
+                  fetchpriority="high"
+                />
+              : <span class="hero-initial" data-hero-foreground>{portfolio.name.slice(0, 1)}</span>
+            }
+            {portrait && <span class="portrait-dots" aria-hidden="true"></span>}
+          </div>
+        </div>
+      </section>
+
+      <section class="section container split-section" id="about" aria-labelledby="about-title">
+        <MotionHeading id="about-title" text="Hey!" />
+        <div class="prose">
+          <p class="about-statement">
+            <span class="about-readable">{portfolio.about}</span>
+            <span aria-hidden="true">{portfolio.about.split(/\s+/).map((word, w) => (
+              <><span class="about-word">{Array.from(word, (letter, i) => {
+                const seed = w * 7 + i;
+                const angle = (seed % 4) * Math.PI / 2 + Math.sin(seed) * 0.23;
+                const x = Math.cos(angle).toFixed(3);
+                const y = Math.sin(angle).toFixed(3);
+                return <span class="about-glyph" style={`--x:${x};--y:${y};--bend:${seed % 2 ? 1 : -1};--lag:${seed % 5 * 30}ms`}>{letter}</span>;
+              })}</span>{" "}</>
+            ))}</span>
+          </p>
+          <div class="story-columns">
+            <p>I’m Alsaf. I study <strong>computer science at Dr. D. Y. Patil Vidyapeeth</strong>. Lately I’ve been curious about what happens after I hit Save. Where does that bit of information go, and how does the app find it again? That’s what draws me to backend engineering. I’m learning about data structures in C++ and Python, and those questions give me a reason to keep digging.</p>
+            <p>I’d love to spend a hackathon with a few people figuring out what we can make together. <strong>AI and cloud computing</strong> are the two areas I’d most like to explore next. I’m also open to an internship where I can write code alongside someone more experienced and ask how they’d approach the same problem.</p>
+          </div>
+        </div>
+      </section>
+
+      {portfolio.experience.length > 0 && <section class="section container" id="experience">
+        <p class="chapter-label">Experience</p><h2>Work journal</h2>
+        {portfolio.experience.map(entry => <article><h3>{entry.role}</h3><p>{entry.organization} · {entry.period}</p><p>{entry.description}</p></article>)}
+      </section>}
+
+      {featured && <section class="work-paper" id="work" aria-labelledby="work-title">
+        <div class="section container">
+          <p class="chapter-label">Selected projects</p>
+          <MotionHeading id="work-title" text="From my workbench." />
+          <div class="archive-grid">
+            {portfolio.projects.map((project, index) => <ProjectFolder project={project} index={index} />)}
+          </div>
+          {portfolio.moreProjects.length > 0 && <section class="more-projects" id="more-projects" aria-labelledby="more-title">
+            <h3 id="more-title">More projects</h3>
+            <ul>{portfolio.moreProjects.map((project, index) => <li>
+              <a href={project.url}>
+                <span class="mini-folder" aria-hidden="true">
+                  <svg viewBox="0 0 160 128" focusable="false">
+                    <defs>
+                      <linearGradient id={`mini-silver-${index}`} x2="0" y2="1">
+                        <stop stop-color="#fafbfc" /><stop offset="1" stop-color="#e9edf1" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M1 26Q1 17 11 17H69C79 17 80 1 92 1H149Q159 1 159 11V116Q159 127 148 127H12Q1 127 1 116Z" fill="#f1f3f5" stroke="#cdd1d5"/>
+                    <rect class="mini-sheet" x="7" y="49" width="146" height="68" rx="5" fill="#fff" stroke="#cdd1d5"/>
+                    <path d="M1 46Q1 35 11 35H56C66 35 68 50 80 50H149Q159 50 159 60V116Q159 127 148 127H12Q1 127 1 116Z" fill={`url(#mini-silver-${index})`} stroke="#c6cbd0"/>
+                  </svg>
+                  <span class="mini-caption"><small>1 resource</small></span>
+                </span>
+                <span class="mini-title">{project.title}</span>
+                <span class="mini-link">View on GitHub <span aria-hidden="true">↗</span></span>
+              </a>
+            </li>)}</ul>
+          </section>}
+        </div>
+      </section>}
+
+      {portfolio.skills.length > 0 && <section class="section container toolkit" id="toolkit" aria-labelledby="toolkit-title">
+        <p class="chapter-label">Tech stack</p>
+        <MotionHeading id="toolkit-title" text="Inside my toolkit." />
+        <p class="toolkit-intro">I like following a click past the screen. <em>What handles the request? Where does the data go?</em> These are the tools I’m learning to connect.</p>
+        <ul class="tool-index">
+          {portfolio.skills.map(skill => <li>
+            <img src={`/icons/${skill.icon}.svg`} width="28" height="28" alt="" />
+            <span>{skill.name}<small>{skill.purpose}</small></span>
+          </li>)}
+        </ul>
+      </section>}
+
+      {(education || portfolio.currentLearning.length > 0) && <section class="section container" id="learning" aria-labelledby="learning-title">
+        <p class="chapter-label">Education</p>
+        <MotionHeading id="learning-title" text="What I’m studying." />
+        <div class="study-columns">
+          {education && <div>
+            <h3>{education.degree}</h3>
+            {education.college && <p>{education.college}</p>}
+            <p class="study-dates">{[education.startYear && `Started ${education.startYear}`, education.graduation && `Expected graduation ${education.graduation}`].filter(Boolean).join(" · ")}</p>
+            {education.firstYearCgpa && <p class="study-result">First-year CGPA <strong>{education.firstYearCgpa}</strong></p>}
+          </div>}
+          <div>{portfolio.currentLearning.map(item => <p>{item}</p>)}</div>
+        </div>
+      </section>}
+
+      {portfolio.activities.length > 0 && (
+        <section class="section container split-section" id="activities" aria-labelledby="activities-title">
+          <MotionHeading id="activities-title" text="Activities & contributions" />
+          <ul class="detail-list">
+            {portfolio.activities.map((activity) => (
+              <li>
+                <p class="metadata">{activity.type}</p>
+                <h3>{activity.url ? <a href={activity.url}>{activity.title}</a> : activity.title}</h3>
+                <p>{activity.description}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </main>
+
+    <footer class="dark site-finale" id={hasContact ? "contact" : undefined}>
+      <div class="container contact-frame">
+        <div class="contact-identity">
+          <p class="contact-name">{portfolio.fullName}</p>
+          <p>I’d love to join a hackathon team, explore an idea in AI or cloud computing, or hear about an internship.</p>
+        </div>
+        <div class="contact-invite">
+          <h2 class="contact-headline"><span>What are you</span> <em>building?</em></h2>
+          {links.email && <ContactComposer email={links.email} instagram={links.instagram} />}
+        </div>
+        <div class="contact-address">
+          {links.email && <a href={`mailto:${links.email}`}>{links.email}</a>}
+        </div>
+        <div class="contact-socials">
+          {links.github && <a href={links.github}>GitHub ↗</a>}
+          {links.instagram && <a href={links.instagram}>Instagram ↗</a>}
+          {links.linkedin && <a href={links.linkedin}>LinkedIn ↗</a>}
+          {links.resume && <a href={links.resume}>Résumé ↗</a>}
+        </div>
+      </div>
+      <div class="container closing-signoff">
+        <svg class="signature" viewBox="0 0 205 80" role="img" aria-label="Stylized Alsaf signature">
+          <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path pathLength="1" d="M5 62Q30 49 51 14Q54 8 51 24L43 63M16 48Q37 42 62 40M50 54Q66 44 77 16Q83 -1 73 17Q49 66 66 54L80 42Q67 59 81 54Q93 48 90 42Q84 40 87 45L96 51Q100 59 84 59M98 54Q108 37 117 43Q111 40 102 52Q97 63 115 46Q109 62 126 50Q144 32 151 12Q154 1 146 13Q132 34 122 70M115 46Q149 40 163 40M53 67Q116 53 195 56"/>
+          </g>
+        </svg>
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<script>
+  import { portraits } from "../content/portfolio";
+  import { animate, scroll } from "motion";
+
+  const selection = new URLSearchParams(location.search).get("portrait");
+  const photo = document.querySelector<HTMLImageElement>(".hero-art-photo img");
+  if (photo && selection && Object.prototype.hasOwnProperty.call(portraits, selection)) {
+    const variant = portraits[selection as keyof typeof portraits];
+    photo.removeAttribute("srcset");
+    photo.src = variant.url;
+    photo.alt = variant.alt;
+  }
+
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (!reducedMotion.matches) {
+    const explore = document.querySelector<HTMLAnchorElement>(".explore-projects");
+    if (explore && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      explore.addEventListener("pointermove", event => {
+        const box = explore.getBoundingClientRect();
+        explore.style.setProperty("--pull-x", `${8 * ((event.clientX - box.left) / box.width - 0.5)}px`);
+        explore.style.setProperty("--pull-y", `${6 * ((event.clientY - box.top) / box.height - 0.5)}px`);
+      });
+      explore.addEventListener("pointerleave", () => {
+        explore.style.removeProperty("--pull-x");
+        explore.style.removeProperty("--pull-y");
+      });
+    }
+    const hero = document.querySelector<HTMLElement>("[data-hero]");
+    const foreground = hero?.querySelector<HTMLElement>("[data-hero-foreground]");
+    const art = hero?.querySelector<HTMLElement>(".hero-art-photo");
+    if (hero && art && foreground && matchMedia("(min-width: 64rem)").matches) {
+      scroll(animate(art, { y: [0, 24] }, { ease: "linear" }), {
+        target: hero, offset: ["start start", "end start"],
+      });
+    }
+    if (art && photo && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      art.style.setProperty("--silhouette", `url("${photo.src}")`);
+      art.addEventListener("pointermove", event => {
+        const bounds = art.getBoundingClientRect();
+        art.style.setProperty("--pointer-x", `${event.clientX - bounds.left}px`);
+        art.style.setProperty("--pointer-y", `${event.clientY - bounds.top}px`);
+      });
+    }
+
+    animate(".hero-intro", { y: [14, 0], opacity: [0.8, 1] }, {
+      duration: 1.25,
+      delay: 0.85,
+      ease: [0.22, 1, 0.36, 1],
+    });
+
+    document.querySelectorAll<HTMLElement>("[data-motion-heading]").forEach((heading) => {
+      const letters = heading.querySelectorAll<HTMLElement>(".motion-letter");
+      scroll((progress) => {
+        letters.forEach((letter, index) => {
+          const delay = index / Math.max(1, letters.length - 1) * 0.42;
+          const portion = Math.min(1, Math.max(0, (progress - delay) / 0.58));
+          const eased = 1 - (1 - portion) ** 2;
+          letter.style.setProperty("--letter-opacity", String(0.3 + 0.7 * eased));
+          letter.style.setProperty("--letter-blur", `${4 * (1 - eased)}px`);
+          letter.style.setProperty("--letter-y", `${0.65 * (1 - eased)}em`);
+        });
+      }, { target: heading, offset: ["start end", "start 0.50"] });
+    });
+
+    const statement = document.querySelector<HTMLElement>(".about-statement");
+    if (statement) {
+      const observeWords = () => {
+        statement.classList.add("assemble");
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) entry.target.classList.add("arriving");
+            else if (entry.boundingClientRect.top > window.innerHeight * 0.87) entry.target.classList.remove("arriving");
+          }
+        }, { rootMargin: "0px 0px -13% 0px" });
+        statement.querySelectorAll(".about-word").forEach(word => observer.observe(word));
+      };
+      const curtain = document.querySelector(".opening-curtain");
+      Promise.allSettled((curtain?.getAnimations() ?? []).map(animation => animation.finished)).then(observeWords);
+    }
+
+    const name = hero?.querySelector<HTMLElement>(".motion-heading-visual");
+    if (hero && name) {
+      scroll(animate(name, { y: ["0%", "18%"], scale: [1, 0.93] }, { ease: "linear" }),
+        { target: hero, offset: ["start start", "end start"] });
+    }
+
+    const heroCopy = hero?.querySelector<HTMLElement>(".hero-copy");
+    if (hero && heroCopy) {
+      scroll(animate(heroCopy, { y: [0, -36], opacity: [1, 0.6] }, { ease: "linear" }), {
+        target: hero, offset: ["start start", "end start"],
+      });
+    }
+
+    // Track each item independently so rows keep their timing when they wrap on mobile.
+    const reveals = [
+      { selector: ".story-columns > p", rise: 42, drift: 16, tilt: 0 },
+      { selector: ".archive-entry", rise: 58, drift: 14, tilt: 1.4 },
+      { selector: ".more-projects li", rise: 40, drift: 0, tilt: 2 },
+      { selector: ".tool-index li", rise: 28, drift: 0, tilt: 0 },
+      { selector: ".study-columns > div", rise: 42, drift: 16, tilt: 0 },
+    ];
+    for (const { selector, rise, drift, tilt } of reveals) {
+      document.querySelectorAll<HTMLElement>(selector).forEach((item, index) => {
+        const direction = index % 2 ? -1 : 1;
+        const finish = 0.76 - (index % 4) * 0.035;
+        scroll(animate(item, {
+          y: [rise, 0],
+          x: [direction * drift, 0],
+          rotate: [direction * tilt, 0],
+          opacity: [0.24, 1],
+        }, { ease: [0.22, 0.25, 0.32, 1] }), {
+          target: item, offset: ["start end", `start ${finish}`],
+        });
+      });
+    }
+
+    const invitation = document.querySelector<HTMLElement>(".contact-headline");
+    if (invitation) {
+      Array.from(invitation.children).forEach((line, index) => {
+        scroll(animate(line, {
+          opacity: [0.12, 1],
+          x: [index ? "0.75em" : "-0.65em", "0em"],
+          y: [index ? "0.95em" : "0.6em", "0em"],
+          rotate: [index ? 4 : -2, 0],
+          filter: ["blur(6px)", "blur(0px)"],
+        }, { ease: [0.32, 0.05, 0.24, 1] }), {
+          target: invitation,
+          offset: [index ? "start 0.86" : "start 0.96", index ? "start 0.48" : "start 0.60"],
+        });
+      });
+    }
+
+    const signature = document.querySelector<HTMLElement>(".closing-signoff");
+    const ink = signature?.querySelector("path");
+    if (ink && signature) {
+      scroll(animate(ink, { strokeDashoffset: [1, 0] }, { ease: "linear" }),
+        { target: signature, offset: ["start end", "end end"] });
+    }
+
+
+  }
+</script>

@@ -1,0 +1,84 @@
+---
+const { email, instagram } = Astro.props as { email: string; instagram?: string };
+---
+<button class="contact-cta compose-trigger" type="button" aria-haspopup="dialog" aria-controls="contact-note">Get in touch <span aria-hidden="true">↗</span></button>
+<dialog id="contact-note" aria-labelledby="note-heading">
+  <form method="dialog" class="dismiss"><button aria-label="Close message composer">
+    <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="m4 4 10 10M14 4 4 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+  </button></form>
+  <div class="note-layout">
+    <div class="note-intro">
+      <h2 id="note-heading">Get in touch.</h2>
+      <p>Have a hackathon in mind or an idea you want to try? Tell me a little about it.</p>
+      <div class="note-links">
+        <a href={`mailto:${email}`}>{email}</a>
+        {instagram && <a href={instagram}>Instagram ↗</a>}
+      </div>
+    </div>
+    <form class="note-form" data-recipient={email} method="dialog">
+      <label>Your name<input name="sender" placeholder="Your name" autocomplete="name" required maxlength="100" /></label>
+      <label>Your email<input name="email" type="email" placeholder="you@example.com" autocomplete="email" required maxlength="254" /></label>
+      <label>Subject <small>(optional)</small><input name="subject" placeholder="What’s on your mind?" maxlength="150" /></label>
+      <label>Your message<textarea name="message" placeholder="Tell me about your idea…" required rows="4" maxlength="2500"></textarea></label>
+      <button class="draft" type="submit">Open email draft <span aria-hidden="true">↗</span></button>
+      <small>Review and send in your email app.</small>
+    </form>
+  </div>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>("#contact-note");
+  const form = dialog?.querySelector<HTMLFormElement>(".note-form");
+  document.querySelector(".compose-trigger")?.addEventListener("click", () => dialog?.showModal());
+  form?.addEventListener("submit", event => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const subject = String(data.get("subject") || "Hello from your portfolio").trim();
+    const body = `${data.get("message")}\r\n\r\n${data.get("sender")}\r\n${data.get("email")}`;
+    location.href = `mailto:${form.dataset.recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>
+<style>
+  .compose-trigger { font: inherit; border: 0; cursor: pointer; }
+  dialog {
+    margin: auto; width: min(68.75rem, calc(100% - 2rem)); max-height: 90dvh;
+    overflow: auto; overscroll-behavior: contain; color: #f8f2eb; background: linear-gradient(160deg, #101010 40%, var(--ocean-ink));
+    --note-accent: var(--seafoam);
+    --note-button: linear-gradient(105deg, var(--petrol-mid), var(--petrol-edge));
+    border: 1px solid #45413e; border-radius: clamp(1.2rem, 2.4vw, 2rem); padding: clamp(1.4rem, 3.3vw, 3rem);
+    text-align: left;
+  }
+  dialog::backdrop { background: rgb(8 6 5 / 64%); backdrop-filter: blur(6px); }
+  :global(html:has(#contact-note[open])) { overflow: hidden; }
+  .dismiss { display: flex; justify-content: flex-end; margin: 0 0 1rem; }
+  .dismiss button {
+    display: grid; place-items: center; padding: 0;
+    width: 2.75rem; height: 2.75rem; border-radius: 50%;
+    border: 3px solid #121212; box-shadow: 0 0 0 2px #faf7f3; background: linear-gradient(110deg, var(--petrol-mid), var(--petrol-edge)); color: white; cursor: pointer;
+  }
+  .dismiss button:is(:hover, :focus-visible), .draft:is(:hover, :focus-visible) { filter: brightness(1.08); }
+  .note-layout { display: grid; gap: 2rem; }
+  #note-heading { font: 350 clamp(2.6rem, 4.6vw, 4.1rem)/1 var(--font-display); letter-spacing: -.05em; }
+  .note-links { display: grid; justify-items: start; gap: .75rem; }
+  .note-intro p { color: #d1c7bd; margin: 1.25rem 0; max-width: 28ch; }
+  .note-intro a { color: inherit; overflow-wrap: anywhere; }
+  .note-form, label { display: grid; gap: .35rem; }
+  .note-form { gap: .95rem; }
+  label { display: block; font-size: .88rem; }
+  input, textarea { display: block; margin-top: .35rem; width: 100%; padding: .95rem 1.3rem; border: 1px solid #5a5654; border-radius: 3rem; background: #302e2d; color: inherit; font: inherit; font-size: 1rem; }
+  textarea { resize: vertical; border-radius: 1.35rem; min-height: 7.75rem; }
+  :is(input, textarea)::placeholder { color: #bfbab6; }
+  :is(input, textarea):focus { border-color: var(--note-accent); }
+  dialog :focus-visible { outline: 2px solid var(--note-accent); outline-offset: 2px; }
+  .draft { justify-self: start; border: 0; border-radius: 2rem; padding: .8rem 1.4rem; background: var(--note-button); color: white; cursor: pointer; font: 550 1rem var(--font-body); }
+  small { color: #c7bbb0; }
+  @media (min-width: 46rem) { .note-layout { grid-template-columns: 1fr 1.12fr; gap: 3rem; } }
+  @media (prefers-reduced-motion: no-preference) {
+    .dismiss svg, .draft span { display: inline-block; transition: transform .32s cubic-bezier(.22,1,.36,1); }
+    .dismiss button:is(:hover, :focus-visible) svg { transform: rotate(90deg); }
+    .draft:is(:hover, :focus-visible) span { transform: translate(2px, -2px); }
+    dialog[open]::backdrop { animation: backdrop-in .3s ease-out; }
+    @keyframes backdrop-in { from { opacity: 0; } }
+    dialog[open] { animation: note-in .4s cubic-bezier(.22,1,.36,1); }
+    @keyframes note-in { from { opacity: 0; transform: translateY(1rem); } }
+  }
+</style>

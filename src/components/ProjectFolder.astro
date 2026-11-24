@@ -1,0 +1,54 @@
+---
+import type { Project } from "../content/portfolio";
+import "../styles/project-folder.css";
+const { project, index } = Astro.props as { project: Project; index: number };
+---
+<article class="archive-entry" id={`project-${index + 1}`}>
+  <div class="project-folder">
+    <div class="folder-object">
+      <svg class="folder-back" viewBox="0 0 270 216" aria-hidden="true">
+        <defs>
+          <linearGradient id={`silver-${index}`} x2="0" y2="1" gradientUnits="objectBoundingBox">
+            <stop stop-color="#f6f7f8" /><stop offset="1" stop-color="#e5e9ed" />
+          </linearGradient>
+          <clipPath id={`pocket-${index}`} clipPathUnits="objectBoundingBox">
+            <path d="M0 .36 Q0 .276 .064 .276 H.35 C.42 .276 .426 .394 .51 .394 H.936 Q1 .394 1 .478 V.916 Q1 1 .936 1 H.064 Q0 1 0 .916 Z" />
+          </clipPath>
+        </defs>
+        <path d="M1 45 Q1 28 18 28 H116 C135 28 135 1 156 1 H252 Q269 1 269 18 V198 Q269 215 252 215 H18 Q1 215 1 198 Z" fill={`url(#silver-${index})`} stroke="#cdd1d5" />
+      </svg>
+      {project.repositoryUrl && <a class="folder-sheet folder-sheet-back" href={project.repositoryUrl} aria-label={`View ${project.title} on GitHub`}>GitHub ↗</a>}
+      <button class="folder-toggle" type="button" aria-expanded="false" aria-controls={`notes-${index}`} aria-label={`Project notes for ${project.title}`}>
+        <span class="folder-sheet folder-sheet-front">Read more ↓</span>
+        <span class="folder-cover" style={`clip-path:url(#pocket-${index})`}>
+          <svg viewBox="0 0 270 216" aria-hidden="true"><path d="M.6 78 Q.6 60 17 60 H94.5 C113 60 115 85 138 85 H252 Q269.4 85 269.4 103 V197.5 Q269.4 215.4 252 215.4 H18 Q.6 215.4 .6 198 Z" fill="none" stroke="#c2c8ce" /></svg>
+          <span class="folder-caption"><b>{project.title}</b><small>{project.repositoryUrl ? "2 resources" : "1 resource"}</small></span>
+        </span>
+      </button>
+    </div>
+    <div class="folder-notes" id={`notes-${index}`} hidden>
+      {project.videoUrl ? <video controls preload="none" poster={project.imageUrl} src={project.videoUrl} aria-label={project.title + " demo"} /> : project.imageUrl && <img src={project.imageUrl} alt={project.imageAlt ?? project.title} loading="lazy" />}
+      {project.contribution && <p>{project.contribution}</p>}
+      {project.workflow?.length && <p>{project.workflow.join(" → ")}</p>}
+      <p>{project.stack.join(" · ")}</p>
+    </div>
+  </div>
+  <p class="chapter-label">{project.status}</p>
+  <h3>{project.title}</h3>
+  <p>{project.description}</p>
+  <div class="actions">
+    {project.repositoryUrl && <a href={project.repositoryUrl} aria-label={`View ${project.title} source on GitHub`}>View source ↗</a>}
+    {project.demoUrl && <a href={project.demoUrl}>Live demo ↗</a>}
+  </div>
+</article>
+
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>(".folder-toggle")) {
+    const notes = document.getElementById(button.getAttribute("aria-controls") ?? "");
+    if (!notes) continue;
+    button.addEventListener("click", () => {
+      notes.hidden = !notes.hidden;
+      button.setAttribute("aria-expanded", String(!notes.hidden));
+    });
+  }
+</script>

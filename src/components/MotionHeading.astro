@@ -1,0 +1,23 @@
+---
+const { text, id, hero = false } = Astro.props as {
+  text: string;
+  id?: string;
+  hero?: boolean;
+};
+const Tag = hero ? "h1" : "h2";
+let letterIndex = 0;
+---
+
+<Tag id={id} class:list={["motion-heading", { "motion-heading-entry": hero }]} aria-label={text} data-motion-heading={hero ? undefined : ""}>
+  <span class="motion-heading-visual" aria-hidden="true">
+    {text.split(/(\s+)/).map((part) => (
+      /^\s+$/.test(part) ? part : (
+        <span class="motion-word">
+          {Array.from(part, (letter) => (
+            <span class="motion-letter" style={`--letter-index:${letterIndex++}`}>{letter}</span>
+          ))}
+        </span>
+      )
+    ))}
+  </span>
+</Tag>

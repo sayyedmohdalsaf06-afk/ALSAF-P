@@ -1,0 +1,102 @@
+@font-face {
+  font-family: "Host Grotesk";
+  src: url("/fonts/hostgrotesk.ttf") format("truetype");
+  font-weight: 300 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: Doto;
+  src: url("/fonts/doto.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  /* Surfaces, text, accents, and borders from DESIGN.md. */
+  --petrol-deep: #082f35;
+  --petrol-mid: #11565b;
+  --petrol-light: #328a87;
+  --petrol-edge: #0b4049;
+  --seafoam: #99dfca;
+  --ocean-ink: #101918;
+  --color-canvas: #080808;
+  --color-ink: #101010;
+  --color-paper: #f5f4f0;
+  --color-muted-on-light: #565656;
+  --color-muted-on-dark: #bcbcbc;
+  --color-accent-on-light: #494949;
+  --color-accent-on-dark: #e5e5e5;
+  --color-divider-on-light: #d3d3d3;
+  --color-divider-on-dark: #393939;
+  --color-control-border-on-light: #797979;
+  --color-control-border-on-dark: #848484;
+  --color-folder-stage: #1e1e1e;
+  --color-panel: #161616;
+  --color-panel-alt: #242424;
+  --color-folder-back: #545454;
+  --color-folder-paper: #eaeaea;
+
+  --font-display: "Host Grotesk", system-ui, sans-serif;
+  --font-body: "Host Grotesk", system-ui, sans-serif;
+  --type-hero: 3.25rem / 1.0385;
+  --type-section: 2.25rem / 1.1111;
+  --type-project: 1.625rem / 1.1538;
+  --type-intro: 1.125rem / 1.5556;
+  --type-body: 1rem / 1.625;
+  --type-control: 0.875rem / 1.4286;
+  --type-caption: 0.8125rem / 1.3846;
+
+  --content-width: 80rem;
+  --page-gutter: 1.25rem;
+  --section-spacing: 3.5rem;
+  --control-radius: 0.25rem;
+  --hero-max-size: 17rem;
+  --portrait-position: center 12%;
+  --hero-title-gap: 1rem;
+  --hero-action-gap: 1.5rem;
+  --hero-stack-gap: 2rem;
+  --heading-gap: 1.5rem;
+  --featured-gap: 1rem;
+  --project-row-spacing: 1.25rem;
+  --paragraph-gap: 1rem;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --type-hero: 5rem / 1.025;
+    --type-section: 2.75rem / 1.0909;
+    --type-project: 1.875rem / 1.1333;
+    --type-intro: 1.25rem / 1.5;
+    --type-body: 1.0625rem / 1.6471;
+    --type-control: 0.9375rem / 1.4667;
+    --type-caption: 0.8125rem / 1.5385;
+    --page-gutter: 2rem;
+    --section-spacing: 5rem;
+    --grid-gap: 1.5rem;
+    --hero-title-gap: 1.25rem;
+    --hero-stack-gap: 2.5rem;
+    --heading-gap: 2rem;
+    --featured-gap: 1.25rem;
+    --project-row-spacing: 1.5rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --type-hero: 7.5rem / 0.9833;
+    --type-section: 3.5rem / 1.0714;
+    --type-project: 2.25rem / 1.1111;
+    --type-intro: 1.375rem / 1.4545;
+    --type-body: 1.125rem / 1.6667;
+    --type-caption: 0.875rem / 1.4286;
+    --page-gutter: 4rem;
+    --section-spacing: 7rem;
+    --grid-gap: 2rem;
+    --hero-title-gap: 1.5rem;
+    --hero-action-gap: 2rem;
+    --heading-gap: 2.5rem;
+    --featured-gap: 1.5rem;
+    --project-row-spacing: 2rem;
+    --paragraph-gap: 1.25rem;
+  }
+}

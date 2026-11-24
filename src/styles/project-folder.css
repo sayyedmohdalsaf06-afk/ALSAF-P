@@ -1,0 +1,97 @@
+.project-folder {
+  --folder-ease: cubic-bezier(.22, 1, .36, 1);
+  margin-block: 0 1.5rem;
+}
+
+.folder-toggle {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  pointer-events: none;
+}
+
+.folder-toggle > span { pointer-events: auto; cursor: pointer; }
+.folder-object:has(:focus-visible) { outline: 2px solid currentColor; outline-offset: .4rem; }
+
+.folder-object {
+  position: relative;
+  display: block;
+  width: min(76%, 19rem);
+  aspect-ratio: 270 / 216;
+  margin: 4rem auto 1rem;
+  perspective: 45rem;
+}
+
+.folder-back, .folder-sheet, .folder-cover {
+  position: absolute;
+  display: block;
+  transition: transform .72s var(--folder-ease);
+}
+
+.folder-back, .folder-cover svg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.folder-back { filter: drop-shadow(0 .65rem .65rem rgb(34 48 60 / 6%)); }
+
+.folder-sheet {
+  inset: 42% 6% 8%;
+  padding: .7rem .85rem;
+  border: 1px solid rgb(0 0 0 / 15%);
+  border-radius: .45rem;
+  font: 500 .85rem/1.2 var(--font-body);
+  letter-spacing: .01em;
+  text-decoration: none;
+}
+
+.folder-sheet-front {
+  background: linear-gradient(150deg, #363735, #191a19 78%);
+  color: #fff;
+}
+
+.folder-sheet-back {
+  background: linear-gradient(145deg, #dbdcd8, #b5b7b4);
+  color: #242522;
+  text-align: right;
+}
+
+.folder-cover {
+  inset: 0;
+  background: linear-gradient(165deg, rgb(255 255 255 / 85%) 30%, rgb(244 246 248 / 79%) 60%, #e9edf1 98%);
+  -webkit-backdrop-filter: blur(13px);
+  backdrop-filter: blur(13px);
+  transform-origin: center bottom;
+}
+
+.folder-cover svg { position: absolute; }
+.folder-caption { position: absolute; left: 8.5%; bottom: 12%; color: #191b1e; }
+.folder-caption b { display: block; font: 500 1rem/1.25 var(--font-body); letter-spacing: -.03em; }
+.folder-caption small { display: block; margin-top: .28rem; font: 400 .7rem/1.25 ui-monospace, monospace; letter-spacing: .035em; }
+
+.folder-object:focus-within, .folder-object:has([aria-expanded="true"]) {
+  --back-lift: translate(8%, -76%) rotate(6deg);
+  --front-lift: translate(-8%, -54%) rotate(-6deg);
+  --cover-open: rotateX(-24deg);
+}
+
+@media (hover: hover) {
+  .folder-object:hover {
+    --back-lift: translate(8%, -76%) rotate(6deg);
+    --front-lift: translate(-8%, -54%) rotate(-6deg);
+    --cover-open: rotateX(-24deg);
+  }
+}
+
+.folder-sheet-back { transform: var(--back-lift, none); }
+.folder-sheet-front { transform: var(--front-lift, none); }
+.folder-cover { transform: var(--cover-open, none); }
+
+@media (prefers-reduced-motion: reduce) {
+  .folder-back, .folder-sheet, .folder-cover { transition: none; }
+}
