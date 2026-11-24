@@ -22,3 +22,7 @@ Open the URL printed by Astro. Use `npm run check` to check the Astro and TypeSc
 The first project in the content file is featured. Replace the working name and project entry when your final content is ready. Set `portrait` to an image URL and alt text to replace the hero monogram. For a local image or résumé, put it in `public/` and reference it from the site root, for example `/portrait.webp`. Learning, activities, and contact appear when you add their content. Adjust the portrait crop with `--portrait-position` in the theme.
 
 Layout rules live in `src/styles/portfolio.css`. The page loads Clash Display and Satoshi from Fontshare and falls back to system fonts. To change families, update the stylesheet links and font variables.
+
+## Updating the résumé
+
+Upload your PDF as `public/resume.pdf` and redeploy. The menu and contact footer will link directly to the PDF. Replace the same file for future updates. Until a PDF or résumé URL is available, the footer displays “Résumé · Coming soon”.

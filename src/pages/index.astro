@@ -11,7 +11,9 @@ import "../styles/composition.css";
 const [featured] = portfolio.projects;
 
 const { portrait, education, links } = portfolio;
-const hasContact = Boolean(links.email || links.github || links.instagram || links.linkedin || links.resume);
+const hasResumePdf = Object.keys(import.meta.glob("/public/resume.pdf", { query: "?url" })).length > 0;
+const resumeUrl = hasResumePdf ? "/resume.pdf" : links.resume;
+const hasContact = Boolean(links.email || links.github || links.instagram || links.linkedin || resumeUrl);
 const title = portfolio.name + " | Portfolio";
 ---
 
@@ -48,7 +50,7 @@ const title = portfolio.name + " | Portfolio";
         {portfolio.skills.length > 0 && <a href="#toolkit">Toolkit</a>}
         {(education || portfolio.currentLearning.length > 0) && <a href="#learning">Education</a>}
         {hasContact && <a href="#contact">Contact</a>}
-        {links.resume && <a href={links.resume}>Résumé</a>}
+        {resumeUrl && <a href={resumeUrl}>Résumé</a>}
       </nav>
     </dialog>
     <script>
@@ -73,7 +75,6 @@ const title = portfolio.name + " | Portfolio";
                   <span class="explore-arrow" aria-hidden="true">↘</span>
                 </a>
               )}
-              {links.resume && <a class="button button-secondary" href={links.resume}>Résumé</a>}
             </div>
           </div>
           <div class:list={["hero-art", { "hero-art-photo": portrait }]} aria-hidden={portrait ? undefined : "true"}>
@@ -214,7 +215,7 @@ const title = portfolio.name + " | Portfolio";
           {links.github && <a href={links.github}>GitHub ↗</a>}
           {links.instagram && <a href={links.instagram}>Instagram ↗</a>}
           {links.linkedin && <a href={links.linkedin}>LinkedIn ↗</a>}
-          {links.resume && <a href={links.resume}>Résumé ↗</a>}
+          {resumeUrl ? <a href={resumeUrl}>View résumé →</a> : <span class="resume-pending">Résumé · Coming soon</span>}
         </div>
       </div>
       <div class="container closing-signoff">
@@ -372,3 +373,7 @@ const title = portfolio.name + " | Portfolio";
 
   }
 </script>
+
+<style>
+  .resume-pending { align-self: center; font-size: .875rem; }
+</style>
