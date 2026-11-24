@@ -300,8 +300,8 @@ html:has(.section-menu[open]) { overflow: hidden; }
     animation: lift-curtain 1.65s cubic-bezier(.66,0,.24,1) both;
   }
   .opening-curtain span {
-    font: 600 clamp(1rem, 7vw, 6rem)/1.06 var(--font-display);
-    letter-spacing: .025em;
+    font: 500 clamp(1.15rem, 6.6vw, 5.75rem)/1.12 "Cormorant Garamond", Georgia, serif;
+    letter-spacing: .065em;
     text-transform: uppercase;
     animation: opening-ink 1.45s ease both;
   }
